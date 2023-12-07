@@ -18,7 +18,6 @@ import uz.itschool.telegram_chat.navigation.NavGraph
 import uz.itschool.telegram_chat.ui.theme.Telegram_ChatTheme
 
 class MainActivity : ComponentActivity() {
-    private lateinit var auth:FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,10 +28,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavGraph(navController = navController)
-
-                    auth = FirebaseAuth.getInstance()
-
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 }
             }
         }

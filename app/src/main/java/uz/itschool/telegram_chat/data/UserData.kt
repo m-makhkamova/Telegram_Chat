@@ -1,4 +1,4 @@
-package uz.itschool.telegram_chat
+package uz.itschool.telegram_chat.data
 
 class UserData(
     var name:String? = null,
