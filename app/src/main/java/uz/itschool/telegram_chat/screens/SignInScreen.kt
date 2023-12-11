@@ -49,18 +49,17 @@ fun SignInScreen(navController: NavController) {
             .background(Color(0xFFFFFFFF)),
         contentAlignment = Alignment.Center
     ) {
-        val auth:FirebaseAuth = FirebaseAuth.getInstance()
+        val auth = FirebaseAuth.getInstance()
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString)
+            .requestIdToken(getString(R.string.client_id))
             .requestEmail()
             .build()
 
-        val mGoogleSignInClient = GoogleSignInOptions.(this, gs)
-
+        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         Column(
             modifier = Modifier
-                .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize().padding(50.dp, 20.dp, 0.dp, 0.dp)
         ) {
             val poppinsFamily = FontFamily(
                 Font(R.font.poppins_bold, FontWeight.Bold),
@@ -79,7 +78,7 @@ fun SignInScreen(navController: NavController) {
             Text(
                 text = "Hello, Welcome Back",
                 fontSize = 22.sp,
-                modifier = Modifier.padding(30.dp, 30.dp, 0.dp, 0.dp),
+                modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp),
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Bold
             )
@@ -87,7 +86,7 @@ fun SignInScreen(navController: NavController) {
                 text = "Happy to see you again, to use your account please login first, using your Google account.",
                 fontSize = 12.sp,
                 modifier = Modifier
-                    .padding(30.dp, 0.dp, 0.dp, 0.dp)
+                    .padding(0.dp, 0.dp, 0.dp, 10.dp)
                     .width(300.dp),
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Normal
@@ -96,25 +95,16 @@ fun SignInScreen(navController: NavController) {
                 painter = painterResource(id = R.drawable.signin),
                 contentDescription = "SignIn image",
                 modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .padding(200.dp, 0.dp, 0.dp, 0.dp)
+                    .height(450.dp)
+                    .width(350.dp).padding(30.dp, 30.dp, 0.dp, 10.dp)
             )
 
             Button(onClick = {
                 navController.navigate("signin_screen")
-                val signInIntent = mGoogleSignInClient.signInIntent
-                startActivityForResult(signInIntent, 1)
             }, modifier = Modifier
                 .width(300.dp)
-                .height(45.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0XFF771F98))) {
+                .height(45.dp).padding(0.dp, 0.dp, 0.dp, 0.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0XFF771F98))) {
                 Text(text = "Sign in with Google", fontSize = 18.sp, fontFamily = poppinsFamily, fontWeight = FontWeight.Normal)
-            }
-            Button(onClick = {
-                mGoogleSignInClient.signOut()
-
-            }) {
-                Text(text = "Sign Out")
             }
         }
     }
@@ -127,53 +117,3 @@ fun testSignIn() {
     NavGraph(navController = (navController))
     SignInScreen(navController = navController)
 }
-
-@Composable
-overr fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == 1) {
-        val task = GoogleSignInOptions.(data)
-        try {
-            val account = task.getResult(ApiException::class.java)
-            firebaseAuthWithGoogle(account.idToken)
-            Log.d("TAG", "onActivityResult: All done")
-        } catch (e: ApiException) {
-            Log.d("TAG", "error:Authentication failed!")
-        }
-    }
-}
-
-
-@Composable
-private fun firebaseAuthWithGoogle(idToken: String?) {
-    val credential = GoogleAuthProvider.getCredential(idToken, null)
-    auth.signInWithCredential(credential)
-        .addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-
-                val user = auth.currentUser
-                val userData = UserData(
-                    user?.displayName,
-                    user?.uid,
-                    user?.email,
-                    user?.photoUrl.toString()
-                )
-                setUser(userData)
-
-            } else {
-                Log.d("TAG", "error: Authentication Failed.")
-            }
-        }
-}
-
-
-@Composable
-private fun setUser(userData: UserData) {
-    userData?.run {
-        val userIdReference = Firebase.database.reference
-            .child("users").child(userData.uid?:"")
-        userIdReference.setValue(userData)
-    }
-}
-
-

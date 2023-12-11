@@ -1,6 +1,6 @@
 package uz.itschool.telegram_chat.data
 
-class UserData(
+data class UserData(
     var name:String? = null,
     var uid:String? = null,
     var email:String? = null,

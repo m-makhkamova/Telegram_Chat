@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Telegram_Chat</string>
+    <string name="client_id"></string>
 </resources>
