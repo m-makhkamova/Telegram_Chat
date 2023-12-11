@@ -20,5 +20,8 @@ fun NavGraph (navController: NavHostController){
         composable(route = Screens.SignIn.route){
             SignInScreen(navController)
         }
+        composable(route = Screens.Contacts.route){
+            ContactsScreen(navController)
+        }
     }
 }

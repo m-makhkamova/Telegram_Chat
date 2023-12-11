@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -78,19 +79,7 @@ fun handleSignInResult(data: Intent?, onComplete: (Boolean) -> Unit) {
     }
 }
 
-private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?, onComplete: (Boolean) -> Unit) {
-    val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-    auth.signInWithCredential(credential)
-        .addOnCompleteListener { signInTask ->
-            if (signInTask.isSuccessful) {
-                Log.d("GoogleSignIn", "signInWithCredential:success")
-                onComplete(true)
-            } else {
-                Log.w("GoogleSignIn", "signInWithCredential:failure", signInTask.exception)
-                onComplete(false)
-            }
-        }
-}
+
 @Composable
 fun SignInScreen(navController: NavController) {
     Box(
@@ -145,7 +134,19 @@ fun SignInScreen(navController: NavController) {
             )
 
             Button(onClick = {
-                navController.navigate("signin_screen")
+                private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?, onComplete: (Boolean) -> Unit) {
+                    val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+                    auth.signInWithCredential(credential)
+                        .addOnCompleteListener { signInTask ->
+                            if (signInTask.isSuccessful) {
+                                navController.navigate("signin_screen")
+                                onComplete(true)
+                            } else {
+                                Log.w("GoogleSignIn", "signInWithCredential:failure", signInTask.exception)
+                                onComplete(false)
+                            }
+                        }
+                }
             }, modifier = Modifier
                 .width(300.dp)
                 .height(45.dp)
