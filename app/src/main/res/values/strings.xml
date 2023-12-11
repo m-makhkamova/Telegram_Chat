@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Telegram_Chat</string>
-    <string name="client_id"></string>
+    <string name="client_id">chattingapp-407406</string>
+    <string name="default_web_client_id">190414640186-9dcf3bh66hkg8ehfg4a5r25d0mf2063m.apps.googleusercontent.com</string>
 </resources>
